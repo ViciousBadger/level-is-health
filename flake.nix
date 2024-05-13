@@ -17,11 +17,13 @@
     flake-utils.lib.eachDefaultSystem (system: {
       formatter = pkgs.alejandra;
 
-      devShells.default = pkgs.mkShell {
-        packages = with pkgs; [
+      devShells.default = pkgs.mkShell rec {
+        buildInputs = with pkgs; [
           jdk17
+          libGL
         ];
-        LD_LIBRARY_PATH="/run/opengl-driver/lib:/run/opengl-driver-32/lib";
+        LD_LIBRARY_PATH = "${nixpkgs.lib.makeLibraryPath buildInputs}";
+        # LD_LIBRARY_PATH="/run/opengl-driver/lib:/run/opengl-driver-32/lib";
       };
     });
 }
