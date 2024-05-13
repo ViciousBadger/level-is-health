@@ -22,7 +22,7 @@ loom {
     splitEnvironmentSourceSets()
 
 	mods {
-		"modid" {
+		"level_is_health" {
 			sourceSet sourceSets.main
 			sourceSet sourceSets.client
 		}
