@@ -13,6 +13,7 @@ import net.minecraft.world.World;
 import java.util.UUID;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -25,7 +26,8 @@ public abstract class LevelUpMixin extends LivingEntity {
 
     private static final UUID MODIFIER_ID = UUID.fromString("6fd1cdc4-6c1f-4879-96d5-791bb49d4d7f");
 
-    public int experienceLevel;
+    @Accessor
+    public abstract int getExperienceLevel();
 
     protected LevelUpMixin(EntityType<? extends LivingEntity> entityType, World world) {
         super(entityType, world);
@@ -63,7 +65,7 @@ public abstract class LevelUpMixin extends LivingEntity {
     // }
 
     private void applyHealthModifier() {
-        LevelHealthMod.LOGGER.info("Current level is " + this.experienceLevel);
+        LevelHealthMod.LOGGER.info("Current level is " + this.getExperienceLevel());
 
         EntityAttributeInstance instance = this.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH);
         if (instance == null) {
@@ -73,7 +75,7 @@ public abstract class LevelUpMixin extends LivingEntity {
         var config = LevelHealthMod.config;
 
         int baseHealth = this.defaultMaxHealth;
-        int targetHealth = config.minHealth + (this.experienceLevel / config.levelInterval) * config.levelHealth;
+        int targetHealth = config.minHealth + (this.getExperienceLevel() / config.levelInterval) * config.levelHealth;
         int healthDiff = targetHealth - baseHealth;
 
         instance.tryRemoveModifier(MODIFIER_ID);
