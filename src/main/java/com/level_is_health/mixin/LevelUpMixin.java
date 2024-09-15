@@ -34,6 +34,8 @@ public abstract class LevelUpMixin extends LivingEntity {
     }
 
     // When player is loaded (in case of config changes or newly added mod..)
+    // NOTE: I think this didnt work but I dont remember tbh
+    //
     // @Inject(at = @At("TAIL"), method = "readCustomDataFromNbt")
     // private void constructorInj(CallbackInfo info) {
     // applyHealthModifier();
@@ -41,8 +43,8 @@ public abstract class LevelUpMixin extends LivingEntity {
 
     @Inject(at = @At("HEAD"), method = "tick")
     private void constructorInj(CallbackInfo info) {
+        // This (should) apply the health modifier when any player joins a server or singleplayer world.
         if (this.firstUpdate) {
-            LevelHealthMod.LOGGER.info("First update? " + this.firstUpdate);
             applyHealthModifier();
         }
     }
@@ -53,6 +55,8 @@ public abstract class LevelUpMixin extends LivingEntity {
         applyHealthModifier();
     }
 
+    // Experiments with overwriting entity attributes..
+    //
     // @Inject(at = @At("HEAD"), method = "createPlayerAttributes", cancellable =
     // true)
     // private static void
@@ -65,8 +69,6 @@ public abstract class LevelUpMixin extends LivingEntity {
     // }
 
     private void applyHealthModifier() {
-        LevelHealthMod.LOGGER.info("Current level is " + this.getExperienceLevel());
-
         EntityAttributeInstance instance = this.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH);
         if (instance == null) {
             return;
@@ -85,7 +87,7 @@ public abstract class LevelUpMixin extends LivingEntity {
                         healthDiff,
                         Operation.ADDITION));
         } catch (Exception ex) {
-            LevelHealthMod.LOGGER.info("Could not apply health modifier (probably already applied)");
+            LevelHealthMod.LOGGER.debug("Could not apply health modifier (probably already applied)");
         }
     }
 

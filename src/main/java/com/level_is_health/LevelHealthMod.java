@@ -27,7 +27,7 @@ public class LevelHealthMod implements ModInitializer {
         // However, some things (like resources) may still be uninitialized.
         // Proceed with mild caution.
 
-        LOGGER.info("Loading config...");
+        LOGGER.debug("Loading config...");
 
         File f = new File(CONFIG_FILE);
         if (f.exists() && !f.isDirectory()) {
