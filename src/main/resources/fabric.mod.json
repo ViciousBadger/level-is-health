@@ -11,7 +11,7 @@
 		"homepage": "https://github.com/ViciousBadger/level-is-health",
 		"sources": "https://github.com/ViciousBadger/level-is-health"
 	},
-	"license": "CC0-1.0",
+	"license": "Apache-2.0",
 	"icon": "assets/modid/icon.png",
 	"environment": "*",
 	"entrypoints": {
