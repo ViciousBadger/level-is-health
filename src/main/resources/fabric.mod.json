@@ -12,11 +12,11 @@
 		"sources": "https://github.com/ViciousBadger/level-is-health"
 	},
 	"license": "Apache-2.0",
-	"icon": "assets/modid/icon.png",
+	"icon": "assets/level_is_health/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.level_is_health.LevelHealthMod"
+			"com.badgerson.level_is_health.LevelHealthMod"
 		]
 	},
 	"mixins": [

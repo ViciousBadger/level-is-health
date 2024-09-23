@@ -1,4 +1,4 @@
-package com.level_is_health;
+package com.badgerson.level_is_health;
 
 public class LevelHealthConfig {
     // Default values...

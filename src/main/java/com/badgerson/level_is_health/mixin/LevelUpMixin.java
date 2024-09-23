@@ -1,4 +1,4 @@
-package com.level_is_health.mixin;
+package com.badgerson.level_is_health.mixin;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.level_is_health.LevelHealthMod;
+import com.badgerson.level_is_health.LevelHealthMod;
 
 @Mixin(PlayerEntity.class)
 public abstract class LevelUpMixin extends LivingEntity {

@@ -1,6 +1,6 @@
 {
 	"required": true,
-	"package": "com.level_is_health.mixin",
+	"package": "com.badgerson.level_is_health.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
 		"LevelUpMixin"
