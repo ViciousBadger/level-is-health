@@ -39,7 +39,6 @@ replay_*.log
 *.hprof
 *.jfr
 
-# direnv
-
+.direnv
 .envrc
-.direnv/
+.factorypath

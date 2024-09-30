@@ -8,6 +8,7 @@ import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.attribute.EntityAttributeModifier.Operation;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
 import java.util.UUID;
@@ -24,7 +25,7 @@ import com.badgerson.level_is_health.LevelHealthMod;
 @Mixin(PlayerEntity.class)
 public abstract class LevelUpMixin extends LivingEntity {
 
-    private static final UUID MODIFIER_ID = UUID.fromString("6fd1cdc4-6c1f-4879-96d5-791bb49d4d7f");
+    private static final Identifier ATTR_ID = Identifier.of(LevelHealthMod.MOD_ID, "extra_health");
 
     @Accessor
     public abstract int getExperienceLevel();
@@ -33,17 +34,9 @@ public abstract class LevelUpMixin extends LivingEntity {
         super(entityType, world);
     }
 
-    // When player is loaded (in case of config changes or newly added mod..)
-    // NOTE: I think this didnt work but I dont remember tbh
-    //
-    // @Inject(at = @At("TAIL"), method = "readCustomDataFromNbt")
-    // private void constructorInj(CallbackInfo info) {
-    // applyHealthModifier();
-    // }
-
+    // When joining a singleplayer world or server
     @Inject(at = @At("HEAD"), method = "tick")
     private void constructorInj(CallbackInfo info) {
-        // This (should) apply the health modifier when any player joins a server or singleplayer world.
         if (this.firstUpdate) {
             applyHealthModifier();
         }
@@ -55,18 +48,11 @@ public abstract class LevelUpMixin extends LivingEntity {
         applyHealthModifier();
     }
 
-    // Experiments with overwriting entity attributes..
-    //
-    // @Inject(at = @At("HEAD"), method = "createPlayerAttributes", cancellable =
-    // true)
-    // private static void
-    // attr(CallbackInfoReturnable<DefaultAttributeContainer.Builder> info) {
-    // info.setReturnValue(LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_ATTACK_DAMAGE,
-    // 1.0)
-    // .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.10000000149011612)
-    // .add(EntityAttributes.GENERIC_ATTACK_SPEED).add(EntityAttributes.GENERIC_LUCK)
-    // .add(EntityAttributes.GENERIC_MAX_HEALTH, 2));
-    // }
+    // When item is enchanted (decrementing level)
+    @Inject(at = @At("TAIL"), method = "applyEnchantmentCosts")
+    private void applyEnchantmentCostsInj(CallbackInfo info) {
+        applyHealthModifier();
+    }
 
     private void applyHealthModifier() {
         EntityAttributeInstance instance = this.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH);
@@ -80,14 +66,13 @@ public abstract class LevelUpMixin extends LivingEntity {
         int targetHealth = config.minHealth + (this.getExperienceLevel() / config.levelInterval) * config.levelHealth;
         int healthDiff = targetHealth - baseHealth;
 
-        instance.tryRemoveModifier(MODIFIER_ID);
         try {
-        instance.addPersistentModifier(
-                new EntityAttributeModifier(MODIFIER_ID, "levelIsHealth.healthModifier",
-                        healthDiff,
-                        Operation.ADDITION));
+            instance.overwritePersistentModifier(
+                    new EntityAttributeModifier(ATTR_ID,
+                            healthDiff,
+                            Operation.ADD_VALUE));
         } catch (Exception ex) {
-            LevelHealthMod.LOGGER.debug("Could not apply health modifier (probably already applied)");
+            LevelHealthMod.LOGGER.error("[Level is health] Could not apply extra health modifier for a player... Please report the following message to the mod author:\n" + ex.toString());
         }
     }
 
